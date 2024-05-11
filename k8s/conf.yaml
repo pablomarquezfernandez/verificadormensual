@@ -1,0 +1,22 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: sincronizacion-pagosmensuales
+  namespace: marshando-backend-pre
+spec:
+  schedule: "0 4 1 * *"  # Programación del CronJob (ejecuta cada hora)
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          restartPolicy: Never
+          containers:
+          - name:  sincronizacion-pagosmensuales
+            image: docker.dynaco.co/act-pagosmensuales-pre
+            command: ["java", "-jar", "pagosmensuales-1.0-SNAPSHOT-jar-with-dependencies.jar"]
+            env:
+              - name: transmissions_url
+                valueFrom:
+                  configMapKeyRef:
+                    name:  variables-entorno
+                    key: transmissions_url
